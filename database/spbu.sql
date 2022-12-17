@@ -1,0 +1,68 @@
+CREATE TABLE IF NOT EXISTS produk(
+    id INT(11) NOT NULL AUTO_INCREMENT,
+    kode CHAR(10) NOT NULL,
+    nama VARCHAR(50) NOT NULL,
+    harga DOUBLE NOT NULL DEFAULT 0,
+    PRIMARY KEY (id),UNIQUE (nama)
+    );
+
+CREATE TABLE IF NOT EXISTS akun(
+    id VARCHAR(100) NOT NULL,
+    username VARCHAR(100) NOT NULL,
+    password VARCHAR(100) NOT NULL,
+    level CHAR(2) NOT NULL DEFAULT '0',
+    PRIMARY KEY(id),UNIQUE (username)
+    );
+
+CREATE TABLE IF NOT EXISTS spbu(
+    id INT(11) NOT NULL AUTO_INCREMENT,
+    nomor VARCHAR(20) NOT NULL,
+    nama VARCHAR(50) NOT NULL,
+    alamat TEXT,
+    longtitude DOUBLE DEFAULT 0,
+    langtitude DOUBLE DEFAULT 0,
+    PRIMARY KEY(id),
+    UNIQUE(nomor)
+    );
+
+CREATE TABLE IF NOT EXISTS penjualan(
+    id INT(11) NOT NULL AUTO_INCREMENT,
+    tanggal DATE NOT NULL,
+    id_spbu INT(11) NOT NULL,
+    total_penjualan DOUBLE NOT NULL DEFAULT 0,
+    total_pendapatan DOUBLE NOT NULL DEFAULT 0,
+    id_pengguna VARCHAR(100) NOT NULL,
+    PRIMARY KEY(id),
+    CONSTRAINT fk_spbu FOREIGN KEY (id_spbu) REFERENCES spbu(id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT fk_akun FOREIGN KEY (id_pengguna) REFERENCES akun(id) ON UPDATE CASCADE ON DELETE RESTRICT
+);
+
+CREATE TABLE IF NOT EXISTS tangki(
+    id INT(11) NOT NULL AUTO_INCREMENT,
+    id_penjualan INT(11) NOT NULL,
+    stok_awal DOUBLE NOT NULL DEFAULT 0,
+    stok_akhir DOUBLE NOT NULL DEFAULT 0,
+    PRIMARY KEY(id),
+    CONSTRAINT fk_tangki FOREIGN KEY (id_penjualan) REFERENCES penjualan(id) ON UPDATE CASCADE ON DELETE RESTRICT
+);
+
+CREATE TABLE IF NOT EXISTS terra(
+    id INT(11) NOT NULL AUTO_INCREMENT,
+    id_penjualan INT(11) NOT NULL,
+    jumlah DOUBLE NOT NULL,
+    keterangan VARCHAR(100) NOT NULL,
+    PRIMARY KEY(id),
+    CONSTRAINT fk_terra FOREIGN KEY (id_penjualan) REFERENCES penjualan(id) ON UPDATE CASCADE ON DELETE RESTRICT
+);
+
+CREATE TABLE IF NOT EXISTS pompa(
+    id INT(11) NOT NULL AUTO_INCREMENT,
+    id_penjualan INT(11) NOT NULL,
+    t_awal DOUBLE NOT NULL,
+    t_akhir DOUBLE NOT NULL,
+    id_produk INT(11) NOT NULL,
+    harga DOUBLE NOT NULL,
+    PRIMARY KEY(id),
+    CONSTRAINT fk_pompa_penjualan FOREIGN KEY (id_penjualan) REFERENCES penjualan(id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT fk_produk_penjualan FOREIGN KEY (id_produk) REFERENCES produk(id) ON UPDATE CASCADE ON DELETE RESTRICT
+);
